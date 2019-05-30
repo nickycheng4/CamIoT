@@ -3,7 +3,7 @@
 ## Camera+IOT project
 
  
-***This is my first HCI project as a part of professor Anthony's Chen***
+***UCLA HCI professor Anthony's Chen summer 2019***
 
 
 ***
