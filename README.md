@@ -23,6 +23,7 @@ The challenge is to develop an solid algorithm that can perform a well recogniti
 2. BurstShooting: Includes the code for taking multiple pictures in the given time. The data from burstShooting would be used for training the ML model.
 3. touchSensor: This folder has the code for configuring the OSEPP touch sensor and reading the data. 
 4. imageProcessing: The code for training the ML and processing the Images
+5. finalCode: Combining the different code pieces here. 
 
 More to come ...
 ***
