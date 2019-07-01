@@ -4,6 +4,12 @@ import struct
 import time
 import picamera
 
+# Touch Sensor required libraries
+form gpiozero import Button
+from time import sleep
+
+button = Button(2)
+
 
 
 # Connect a client socket to my_server:8000 (change my_server to the
@@ -20,27 +26,20 @@ try:
     # Start a preview and let the camera warm up for 2 seconds
     camera.start_preview()
     time.sleep(2)
-
+    
     # Note the start time and construct a stream to hold image data
     # temporarily (we could write it directly to connection but in this
     # case we want to find out the size of each capture first to keep
     # our protocol simple)
     # start = time.time()
     stream = io.BytesIO()
-
-
+    
+    
     while True:
-        # wait for input command
-        input_command = input("Press w to take a picture or press q to quit: ")
-        if input_command == 'q':
-            break
-        elif input_command!= 'w':
-            print ("Invalid command entered, please re-enter the command.")
-            continue
-
-
-        # take 1 picture
-
+        # wait for the user to touch the sensor
+        button.wait_for_release()
+        # Then take 1 picture
+        print("Taking picutre Now!")
         camera.capture(stream, 'jpeg')
         # Write the length of the capture to the stream and flush to
         # ensure it actually gets sent
@@ -58,7 +57,8 @@ try:
         
         # let the camera wait for a while, not sure if necessary
         time.sleep(1)
-
+        print("Done!")
+    
     # Write a length of zero to the stream to signal we're done
     connection.write(struct.pack('<L', 0))
 finally:
