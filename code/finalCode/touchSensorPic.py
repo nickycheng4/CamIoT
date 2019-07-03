@@ -5,7 +5,7 @@ import time
 import picamera
 
 # Touch Sensor required libraries
-form gpiozero import Button
+from gpiozero import Button
 from time import sleep
 
 button = Button(2)
@@ -15,7 +15,7 @@ button = Button(2)
 # Connect a client socket to my_server:8000 (change my_server to the
 # hostname of your server)
 client_socket = socket.socket()
-client_socket.connect(('192.168.1.3', 8000))
+client_socket.connect(('192.168.1.3', 80))
 
 # Make a file-like object out of the connection
 connection = client_socket.makefile('wb')
@@ -31,7 +31,7 @@ try:
     # temporarily (we could write it directly to connection but in this
     # case we want to find out the size of each capture first to keep
     # our protocol simple)
-    # start = time.time()
+    start = time.time()
     stream = io.BytesIO()
     
     
