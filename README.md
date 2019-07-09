@@ -34,6 +34,8 @@ We are now using ***[ImageAI](https://github.com/OlafenwaMoses/ImageAI)*** and *
 #### ImageAI folder:
 Here we have tried imageAI **CustomImagePrediction** to train two models:
 1. First one for recognizing our five appliances including: Coffee Maker, Printer, TV, Lamp, Monitor
+![Coffee Maker](https://github.com/Amir-Omidfar/camiot/blob/master/coffeMaker.jpg)
+
 2. Second one for recognizing the index finger in the picture or not.
 
 After installing the required packages, augment your data with ***augmentData.py*** and train your customImage prediction using ***trainCustomClassifier.py***. 
