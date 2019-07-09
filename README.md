@@ -25,7 +25,7 @@ The challenge is to develop an solid algorithm that can perform a well recogniti
 4. imageProcessing: The code for training the ML and processing the Images
 5. finalCode: Combining the different code pieces here. 
 
-More to come ...
-***
 
+***
+We are now using ***[ImageAI](https://github.com/OlafenwaMoses/ImageAI)*** and ***[Augmentor](https://github.com/mdbloice/Augmentor)*** for our image processing technique and the results will be reported accordingly. 
  
