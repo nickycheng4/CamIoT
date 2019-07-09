@@ -37,7 +37,12 @@ Here we have tried imageAI **CustomImagePrediction** to train two models:
 ![Coffee Maker](https://github.com/Amir-Omidfar/camiot/blob/master/coffeMaker.jpg)
 
 2. Second one for recognizing the index finger in the picture or not.
-
+![finger pic][link]
 After installing the required packages, augment your data with ***augmentData.py*** and train your customImage prediction using ***trainCustomClassifier.py***. 
 
 
+
+
+
+
+[link]: https://github.com/Amir-Omidfar/camiot/blob/master/finger.jpg "Finger picture"
