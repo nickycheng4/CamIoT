@@ -29,3 +29,13 @@ The challenge is to develop an solid algorithm that can perform a well recogniti
 ***
 We are now using ***[ImageAI](https://github.com/OlafenwaMoses/ImageAI)*** and ***[Augmentor](https://github.com/mdbloice/Augmentor)*** for our image processing technique and the results will be reported accordingly. 
  
+---
+
+#### ImageAI folder:
+Here we have tried imageAI **CustomImagePrediction** to train two models:
+1. First one for recognizing our five appliances including: Coffee Maker, Printer, TV, Lamp, Monitor
+2. Second one for recognizing the index finger in the picture or not.
+
+After installing the required packages, augment your data with ***augmentData.py*** and train your customImage prediction using ***trainCustomClassifier.py***. 
+
+
