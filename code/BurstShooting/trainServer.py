@@ -5,6 +5,7 @@ from __future__ import print_function
 import io
 import socket
 import struct
+import PIL  
 from PIL import Image
 import numpy as np
 import cv2
@@ -24,6 +25,7 @@ try:
     while True:
         # Read the length of the image as a 32-bit unsigned int. If the
         # length is zero, quit the loop
+        print("Receiving a picture!")
         image_len = struct.unpack('<L', connection.read(struct.calcsize('<L')))[0]
         if not image_len:
             break
