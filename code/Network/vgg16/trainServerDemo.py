@@ -80,26 +80,42 @@ def controlAppliance(appliaceClient):
 # Start a socket listening for connections on 0.0.0.0:8000 (0.0.0.0 means
 # all interfaces)
 server_socket = socket.socket()
-server_socket.bind(('192.168.1.13', 7000))
+server_socket.bind(('192.168.1.13', 7001))
 server_socket.listen(0)
 # counter = 0
 # Accept a single connection and make a file-like object out of it
 connection = server_socket.accept()[0].makefile('rb')
 control = False
 
+########################
+tServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+tServer.setblocking(False)
+#tServer.settimeout(0)
+tServer.bind(('192.168.1.13', 8001))
+#tServer.setblocking(0)
+tServer.listen(0)
+connect,addr = tServer.accept()
+data=connect.recv(1024)
+print(data.decode("utf-8"))
+
+#######################
 layer = 'fc2'
 base_model = VGG16(weights='imagenet')
 model = Model(inputs=base_model.input, outputs=base_model.get_layer(layer).output)
 clf = load('mlp_classifier_Lab_Pi_Aug.joblib') 
 
 counter = 0
+control = False
 
 try:
 	while True:
+
 		# Read the length of the image as a 32-bit unsigned int. If the
 		# length is zero, quit the loop
 		image_len = struct.unpack('<L', connection.read(struct.calcsize('<L')))[0]
 		if not image_len:
+			info = server_socket.recv(1024)
+			print(info.decode('utf-8'))
 			break
 		# Construct a stream to hold the image data and read the image
 		# data from the connection
@@ -116,35 +132,77 @@ try:
 		
 		#img = generate_crop(file_path,240)
 
+		if not control:
 		
-		test_set = []
-		img_crop,img_bk = generate_crop(direc,220)
-		cv2.imwrite('2nd_step.jpg',img_crop)
-	
-		img = image.load_img('2nd_step.jpg', target_size=(224, 224))
-		img_data = image.img_to_array(img)
-		img_data = np.expand_dims(img_data, axis=0)
-		img_data = preprocess_input(img_data)
+			test_set = []
+			img_crop,img_bk = generate_crop(direc,220)
+			cv2.imwrite('2nd_step.jpg',img_crop)
+		
+			img = image.load_img('2nd_step.jpg', target_size=(224, 224))
+			img_data = image.img_to_array(img)
+			img_data = np.expand_dims(img_data, axis=0)
+			img_data = preprocess_input(img_data)
 
-		vgg16_feature = model.predict(img_data)
-		test_set.append(np.ndarray.tolist(vgg16_feature[0]))
+			vgg16_feature = model.predict(img_data)
+			test_set.append(np.ndarray.tolist(vgg16_feature[0]))
 
-		if test_set:
-			predict_target = clf.predict(test_set)
-			print(predict_target.shape)
-			print(predict_target.size)
-			predict_prob = clf.predict_proba(test_set)
-			#print(correct_tag)
-			#print('predict results.')
-			print(predict_target)
-			predict_target=predict_target[0]
-			print(predict_target)
-			applianceTuple=applianceDict[predict_target]
-			#print('probability.')
-			#print(clf.classes_)
-			#print(predict_prob)
-			applianceClient=callAppliace(predict_target,applianceTuple[1])
-			controlAppliance(applianceClient)
+			if test_set:
+				predict_target = clf.predict(test_set)
+				print(predict_target.shape)
+				print(predict_target.size)
+				predict_prob = clf.predict_proba(test_set)
+				#print(correct_tag)
+				print('predict results.')
+				print(clf.classes_)
+				print(predict_prob)
+				prob = predict_prob[0]
+				orderedIndex=sorted(range(len(prob)), key=lambda k: prob[k],reverse=True)
+				print(orderedIndex)
+				print("appliances in order")
+				# get all the results in order and loop thru
+				print(predict_target)
+				predict_target=predict_target[0]
+				for indexCount in orderedIndex:
+					print(clf.classes_[indexCount],end=" ")
+
+				#print(predict_target)
+				applianceTuple=applianceDict[predict_target]
+				indexCount = 0
+				cur_time = time.time()
+				prev_time = time.time()
+				while True:
+					print('in the loop')
+					print(indexCount)
+					print("orderedList ",clf.classes_[orderedIndex[indexCount]])
+					indexCount += 1
+					if indexCount > 5:
+						indexCount = 0
+					try:
+						info=connect.recv(1024)
+						print(info.decode())
+					#cur_time = time.time()
+
+					#if cur_time - prev_time > 3:
+						break
+					#prev_time = time.time()
+					#	break
+					 except:
+					 	info = ''
+
+						#applianceClient=callAppliace(predict_target,applianceTuple[1])
+						#controlAppliance(applianceClient)
+				#print('probability.')
+				#print(clf.classes_)
+				#print(predict_prob)
+			control = True
+		else :
+			img_bk,k,top,control_signal = finger_control_f(direc,220, 30,-70,3)
+			print('slope is ',k,'top y value is ',top)
+			print('control signal is', control_signal)
+			#cv2.imshow('Binary Image', img_bk)
+			control = False
+			counter = video_control(control_signal,counter)
+			
 finally:
 	connection.close()
 	server_socket.close()
