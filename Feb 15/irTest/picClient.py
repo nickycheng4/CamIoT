@@ -9,7 +9,7 @@ import picamera
 # Connect a client socket to my_server:8000 (change my_server to the
 # hostname of your server)
 client_socket = socket.socket()
-client_socket.connect(('192.168.1.2', 8000))
+client_socket.connect(('192.168.0.167', 8000))
 import RPi.GPIO as GPIO
 from time import sleep
 GPIO.setwarnings(False)
@@ -34,8 +34,8 @@ try:
 
         start = time.time()
         stream = io.BytesIO()
-        for i in range(2):
-            if i == 1:
+        for i in range(5):
+            if i%2 == 1:
                 GPIO.output(36,GPIO.HIGH)
                 GPIO.output(38,GPIO.HIGH)
             camera.capture(stream , format='jpeg')
