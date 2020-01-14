@@ -151,7 +151,7 @@ control_scheme = '1'
 # all interfaces)
 server_socket = socket.socket()
 # server_socket.bind(('192.168.1.56', int(channel)))
-server_socket.bind(('192.168.0.113', int(channel)))
+server_socket.bind(('192.168.0.167', int(channel)))
 server_socket.listen(0)
 # counter = 0
 # Accept a single connection and make a file-like object out of it
