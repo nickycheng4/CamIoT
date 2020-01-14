@@ -1,20 +1,11 @@
 # camiot
 
-## Camera+IOT project
-
- 
-***UCLA HCI professor Anthony's Chen summer 2019***
-
-
+## Camiot: Interacting with an Internet of Things from a Distance Usinga Wrist-Worn Camera
 ***
-
+[CamIoT overview]()
 ### Project Description:
 
-In this project we aim to create a remote controller for home appliances that recognize each device taking and processing its picture. 
-
-The assumption for the method of communication between the controller and the devices, is a wireless system (using either Wifi or RF's). 
-
-The challenge is to develop an solid algorithm that can perform a well recognition even if the pictures taken do not include the device in the center. (Including all edge cases). 
+With an Internet of Things (IoT) spatially distributed in our environment, users often feel a need to interact with themremotely. We summarize a design space of remote interaction with objects in the environment and identify an underexploredarea that inspires the design of Camiot—a wrist-worn camera that provides an always-available, self-contained solutionto point at, recognize and interact with IoT objects at a distance. We collected a real-world dataset that reveals how IoTobjects are distributed in the environment and the uncertainty of their appearance in the camera image due to varyingdistances, imprecise aim and inadvertent wrist rotation. Based on these insights we develop(i)a series of data augmentationtechniques to address the uncertainty problem and;(ii)a disambiguation mechanism leveraging a user’s finger occlusion asindicator of where the target appliance is located in the image. We employ these two image processing methods to enhance theperformance of existing object recognition models, resulting in a 28% improvement when trained and tested at a per-user basis.A user study demonstrates Camiot in action where we observed how participants complemented pointing with disambiguationgestures to overwrite the system when it misidentified the intended IoT object
 
 ***
 
@@ -27,22 +18,6 @@ The challenge is to develop an solid algorithm that can perform a well recogniti
 
 
 ***
-We are now using ***[ImageAI](https://github.com/OlafenwaMoses/ImageAI)*** and ***[Augmentor](https://github.com/mdbloice/Augmentor)*** for our image processing technique and the results will be reported accordingly. 
- 
 ---
 
-#### ImageAI folder:
-Here we have tried imageAI **CustomImagePrediction** to train two models:
-1. First one for recognizing our five appliances including: Coffee Maker, Printer, TV, Lamp, Monitor
-![Coffee Maker](https://github.com/Amir-Omidfar/camiot/blob/master/coffeMaker.jpg)
 
-2. Second one for recognizing the index finger in the picture or not.
-![finger pic][link]
-After installing the required packages, augment your data with ***augmentData.py*** and train your customImage prediction using ***trainCustomClassifier.py***. 
-
-
-
-
-
-
-[link]: https://github.com/Amir-Omidfar/camiot/blob/master/finger.jpg "Finger picture"
