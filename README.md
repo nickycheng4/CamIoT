@@ -10,11 +10,16 @@ With an Internet of Things (IoT) spatially distributed in our environment, users
 ***
 
 ### "code folder" explanation:
-1.  Network folder:  Includes the code for server and client codes for esp8266(server) and raspberry pi(client) 
-2. BurstShooting: Includes the code for taking multiple pictures in the given time. The data from burstShooting would be used for training the ML model.
-3. touchSensor: This folder has the code for configuring the OSEPP touch sensor and reading the data. 
-4. imageProcessing: The code for training the ML and processing the Images
-5. finalCode: Combining the different code pieces here. 
+1. The latest code can be found in Feb15:
+  a. Server : This directory contains the code used to be run on the server.  
+  b. Client : This directory contains the coden used to be run on the pi. 
+2. Summer19 and Misc: Includes the initial code from early summer 2019 when we started the project it contains below items :
+  a. The initial code for for server and client codes for esp8266(server) and raspberry pi(client) 
+  b. BurstShooting: Includes the code for taking multiple pictures in the given time. The data from burstShooting would be used for training the ML model.
+  c. touchSensor: This folder has the code for configuring the OSEPP touch sensor and reading the data. 
+  d. imageProcessing: The code for training the ML and processing the Images
+  e. finalCode: Combining the different code pieces here before the first submission in August 2019. 
+3. camiot_visualization:  This directory has one of the demo cases where the user would get feedback through an html webpage while interacting with CamIoT. 
 
 
 ***
