@@ -15,13 +15,13 @@ import cv2
 # Start a socket listening for connections on 0.0.0.0:8000 (0.0.0.0 means
 # all interfaces)
 server_socket = socket.socket()
-server_socket.bind(('192.168.1.2', 8000))
+server_socket.bind(('192.168.0.167', 8000))
 server_socket.listen(0)
 counter = 0
 # Accept a single connection and make a file-like object out of it
 connection = server_socket.accept()[0].makefile('rb')
 try:
-    while True:
+    while counter<5:
         # Read the length of the image as a 32-bit unsigned int. If the
         # length is zero, quit the loop
         image_len = struct.unpack('<L', connection.read(struct.calcsize('<L')))[0]
@@ -37,7 +37,7 @@ try:
         
         file_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)
         img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-        cv2.imwrite(str(counter)+'image.jpg',img)
+        cv2.imwrite('image '+str(counter)+'jpg',img)
         counter += 1
 
 finally:
