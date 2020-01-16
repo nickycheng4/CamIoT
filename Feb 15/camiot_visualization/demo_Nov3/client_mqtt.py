@@ -1,4 +1,5 @@
 import paho.mqtt.publish as publish
+import paho.mqtt.client as mqtt
 import time
 import time
 import picamera
@@ -9,8 +10,28 @@ from imuTri import trigger
 
 from testImuConNew import imuTri
 
-strbroker = "192.168.1.68"
+strbroker = "192.168.1.5"
+server_ip = '192.168.1.36'
+info  = 'not entered'
+ack_info = ''
+feedback_info = ''
+'''
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code "+str(rc))
 
+    client.subscribe("feedback")
+    
+
+def on_message(client, userdata, msg):
+    if msg.topic == 'feedback':
+        feedback_info = msg.payload.decode('utf-8')
+
+client = mqtt.Client()
+client.on_connect = on_connect
+client.on_message = on_message
+
+client.connect(server_ip, 1883, 60)
+'''
 try:
     camera = picamera.PiCamera()
     camera.resolution = (224,224)
@@ -20,6 +41,7 @@ try:
     time.sleep(2)
 
     while True:
+        
         takePic=0
         time.sleep(1)
         
@@ -28,19 +50,18 @@ try:
         imuTri()
         time.sleep(0.2)
         print('taking photos...\n')
-
-        publish.single("command/rec", 'rec' ,hostname = strbroker)
+        info = 'rec'
+        publish.single("command/rec", info ,hostname = strbroker)
         camera.color_effects = None
         camera.resolution = (224,224)
         for num in range(1):
-            camera.capture('1.jpeg')
+            camera.capture('1.png')
             # Write the length of the capture to the stream and flush to
             # ensure it actually gets sent
-            with open("1.jpeg", "rb") as img_file:
+            with open("1.png", "rb") as img_file:
                 my_string = base64.b64encode(img_file.read())
                 print(len(my_string)) 
             publish.single("image", my_string ,hostname = strbroker)
-           
             time.sleep(0.1)
         print('Done!')
         
@@ -51,13 +72,13 @@ try:
         while True:
             if trigger(1.5) == False:
                 print('selecting')
-                info = 'ACK'
-                tSocket.sendall(info.encode('utf-8'))
+                ack_info = 'ACK'
+                publish.single("confirm_img", ack_info ,hostname = strbroker)
                 break
             else:
                 print('changing')
-                info = 'NI'
-                tSocket.sendall(info.encode('utf-8'))
+                ack_info = 'NI'
+                publish.single("confirm_img", ack_info ,hostname = strbroker)
                 time.sleep(0.5)
        
         print("Done!")
@@ -70,12 +91,14 @@ try:
         camera.resolution = (224,224)
 
         info = 'con'
+        publish.single("command/con", info ,hostname = strbroker)
         for num in range(80):
-            publish.single("command/con", info ,hostname = strbroker)
-            camera.capture('2.jpeg')
             
-            with open("2.jpeg", "rb") as img_file:
+            camera.capture('2.png')
+            with open("2.png", "rb") as img_file:
                 my_string = base64.b64encode(img_file.read())
+            publish.single("image", my_string ,hostname = strbroker)
         print('Con part coming soon.')
 finally:
+    camera.close()
     print('Done')

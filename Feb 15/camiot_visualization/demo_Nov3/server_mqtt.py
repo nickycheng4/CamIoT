@@ -4,6 +4,7 @@ from __future__ import print_function
 
 # ------------------------------------------ Import models & files  ------------------------------------------ #
 import paho.mqtt.client as mqtt
+import paho.mqtt.publish as publish
 from PIL import Image
 import base64
 import time
@@ -22,7 +23,7 @@ sys.path.insert(0,'Finger_Detection')
 from crop import generate_crop
 from finger_control import finger_control_f
 
-strbroker = "192.168.1.68"
+strbroker = "192.168.1.5"
 
 # ------------------------------------------ MQTT Functions  ------------------------------------------ #
 def on_connect(client, userdata, flags, rc):
@@ -35,15 +36,16 @@ def on_connect(client, userdata, flags, rc):
  
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
-    
+    print(msg.topic)
     if msg.topic == "confirm_img":
         ack_info = msg.payload.decode('utf-8')
         
-    if 'command' in msg.topic:
-
+    elif 'command' in msg.topic:
+        print('command recognized')
         info = msg.payload.decode('utf-8')
-        print(info)
-        if 'rec' in info:
+        print(info == 'rec')
+        if info == 'rec':
+            print('entered')
             cv2.destroyAllWindows()
             control = False
             flag_f1 = False
@@ -52,7 +54,7 @@ def on_message(client, userdata, msg):
             x_f2 = 0
             y_f1 = 20
             y_f2 = 0
-            direc = str(counter)+'imageRec.jpg'
+            direc = str(counter)+'imageRec.png'
 
             # reset directions
             print('Doing classification.')
@@ -65,9 +67,9 @@ def on_message(client, userdata, msg):
             cv2.imshow('Binary Image', img_bk)
             cv2.waitKey(5)
             
-            cv2.imwrite('2nd_step.jpg',img_crop)
+            cv2.imwrite('2nd_step.png',img_crop)
         
-            img = image.load_img('2nd_step.jpg', target_size=(224, 224))
+            img = image.load_img('2nd_step.png', target_size=(224, 224))
             img_data = image.img_to_array(img)
             img_data = np.expand_dims(img_data, axis=0)
             img_data = preprocess_input(img_data)
@@ -115,19 +117,22 @@ def on_message(client, userdata, msg):
                     if indexCount > 5:
                         indexCount = 0
 
-        elif 'con' in info:
+        elif info == 'con':
             print('con part coming soon.')
 
         else:
-            direc = str(counter)+'image.jpg'
+            direc = str(counter)+'image.png'
         counter += 1
             
     elif msg.topic == 'image': 
-        if msg.payload:
-            with open(direc, "wb") as fh:
-                fh.write(base64.decodebytes(msg.payload))
-        else:
-            print('No image received.')
+        print(len(msg.payload))
+        print('image transmitted')
+        
+        
+        with open('1.png', "wb") as fh:
+            fh.write(base64.decodebytes(msg.payload))
+        
+        
 
 # ------------------------------------------ initiate variables  ------------------------------------------ #
 info = 'nothing'
