@@ -71,111 +71,111 @@
 	min_horozontal = 450;
 	max_vertical = 380;
 	min_vertical = 100;
-	step_x = 35;
-	step_y = 45;
+	step_x = 80;
+	step_y = 80;
 
 	changex(currentX);
 	changey(currentY);
 
 	document.addEventListener('keydown', function(event) {
-		if(event.keyCode == 37) {
+		if(event.keyCode == 37) {//k
 			document.getElementById("feedback").value = 'Current Position: Left.'
 			//currentX = Math.max(currentX-step,min_horozontal)
 			//changex(currentX);
 		}
-		else if (event.keyCode == 39) {
+		else if (event.keyCode == 39) {//k
 			document.getElementById("feedback").value = 'Current Position: Right.'
 			//currentX = Math.min(currentX+step,max_horizontal)
 			//changex(currentX);
 		}
-		else if (event.keyCode == 38) {
+		else if (event.keyCode == 38) {//k
 			document.getElementById("feedback").value = 'Current Position: Up.'
 			//currentY = Math.max(currentY-step,min_vertical)
 			//changey(currentY);
 		}
-		else if (event.keyCode == 40) {
+		else if (event.keyCode == 40) {//k
 			document.getElementById("feedback").value = 'Current Position: Down.'
 			//currentY = Math.min(currentY+step,max_vertical)
 			//changey(currentY);
 		}
-		else if (event.keyCode == 86) {
+		else if (event.keyCode == 86) { //k
 			document.getElementById("feedback").value = 'Current Position: Middle.'
 			
 		}
 
 		//z
-		else if (event.keyCode == 90) { 
+		else if (event.keyCode == 90) {  //k
 			currentX = Math.max(currentX-step_x,min_horozontal)
 			changex(currentX);
 		}
 		//x
-		else if (event.keyCode == 88) {
+		else if (event.keyCode == 88) { //k
 			currentX = Math.min(currentX+step_x,max_horizontal)
 			changex(currentX);
 		}
 		//n
-		else if (event.keyCode == 78) {
+		else if (event.keyCode == 78) { //k
 			currentY = Math.max(currentY-step_y,min_vertical)
 			changey(currentY);
 		}
 		//m
-		else if (event.keyCode == 77) {
+		else if (event.keyCode == 77) { //k
 			currentY = Math.min(currentY+step_y,max_vertical)
 			changey(currentY);
 		}
 
 
-		else if (event.keyCode == 76) {
+		else if (event.keyCode == 76) {//k
 			document.getElementById("feedback").value = 'Finger too right.'
 			document.getElementById("trigger").value = ''
 			changey(230);
 			changex(800);
 		}
 
-		else if (event.keyCode == 75) {
+		else if (event.keyCode == 75) {//k
 			document.getElementById("feedback").value = 'Finger too low.'
 			document.getElementById("trigger").value = ''
 			changey(430);
 			changex(600);
 		}
 
-		else if (event.keyCode == 73) {
+		else if (event.keyCode == 73) {//k
 			document.getElementById("feedback").value = 'Finger too high.'
 			document.getElementById("trigger").value = ''
 			changey(40);
 			changex(600);
 		}
 
-		else if (event.keyCode == 74) {
+		else if (event.keyCode == 74) {//k
 			document.getElementById("feedback").value = 'Finger too left.'
 			document.getElementById("trigger").value = ''
 			changey(230);
 			changex(390);
 		}
 
-		else if (event.keyCode == 82) {
+		else if (event.keyCode == 82) { //k
 			document.getElementById("feedback").value = 'Finger position great! Now move your finger for selection.'
 		}
 
-		else if (event.keyCode == 66) {
+		else if (event.keyCode == 66) {//k
 			document.getElementById("trigger").value = 'Coffee Maker is Selected.'
 		}
 
-		else if (event.keyCode == 67) {
+		else if (event.keyCode == 67) {//k
 			document.getElementById("trigger").value = 'TV is Selected.'
 		}
 		
-		else if (event.keyCode == 68) {
+		else if (event.keyCode == 68) {//k
 			document.getElementById("trigger").value = 'Door is Selected.'
 		}
-		else if (event.keyCode == 65) {
+		else if (event.keyCode == 65) { //k
 			document.getElementById("trigger").value = 'Printer is Selected.'
 		}
-		else if (event.keyCode == 69) {
+		else if (event.keyCode == 69) {//k
 			document.getElementById("trigger").value = 'Monitor is Selected.'
 		}
 		
-		else if (event.keyCode == 13) {
+		else if (event.keyCode == 13) {//k
 			//document.getElementById("feedback").style.fontSize = 24;
 			//window.close();
 			
