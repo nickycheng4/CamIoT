@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>ClearRect Test</title>
+<style>
+/*body {
+  margin:0;
+  padding:0;
+  background:#000;
+}
+canvas {
+  display:block;
+  margin:20px auto;
+  border:1px dashed #0f0;
+}*/
+</style>
+<img id="finger" height = 100 src="fingerArrow.png" style="visibility: hidden;"/>
+<div align = 'left' style="width: 200px; float:left; height:10px;  margin:10px">
+	<h2>Feedback Area</h2>
+	<br>
+	<textarea id = 'feedback' name="" rows="10" cols="20" ></textarea>
+</div>
+<div align='right' style="width: 360px; float:right; height:10px;  margin:10px">
+	<h2>Trigger Area</h2>
+	<br>
+	<textarea id = 'trigger' name="" rows="10" cols="20"></textarea>
+</div>
+
+<script>
+var canvas, ctx, fingerImg, square, rightKey = false, leftKey = false, upKey = false, downKey = false;
+var degree, finLen
+
+function init() {
+  finLen = 0
+  canvas = document.getElementById('canvas');
+  ctx = canvas.getContext('2d');
+  fingerImg = document.getElementById("finger");
+  square = {x:-80,y:-80,w:160,h:240};
+  draw();
+  document.addEventListener('keydown',keyDown,false);
+  document.addEventListener('keyup',keyUp,false);
+}
+function clearRect() {
+  ctx.clearRect(square.x,square.y-200,square.w,square.h+400);
+}
+function drawSquare() {
+  ctx.resetTransform();
+  ctx.translate(250, 500);
+  ctx.rotate(degree*Math.PI/180);
+  if (rightKey){
+  	// ctx.rotate(degree*Math.PI/180); //square.x += 5;
+  	document.getElementById("feedback").value = 'Current Position: \nRight.'
+  }
+  else if (leftKey){ 
+  	// ctx.rotate(degree*Math.PI/180); //square.x -= 5;
+  	document.getElementById("feedback").value = 'Current Position: \nLeft.'
+  }
+  if (upKey){
+  	// ctx.rotate(degree*Math.PI/180); //square.y -= 5;
+  	document.getElementById("feedback").value = 'Current Position: \nUp.'
+  } 
+  else if (downKey){
+  	// ctx.rotate(degree*Math.PI/180); //square.y += 5;
+  	document.getElementById("feedback").value = 'Current Position: \nDown.'
+  }
+  ctx.fillStyle = '#0f0';
+  // ctx.rotate(degree*Math.PI/180); //
+  // ctx.fillRect(square.x,square.y,square.w,square.h);
+  ctx.drawImage(fingerImg,square.x,square.y,square.w,square.h);
+}
+function keyDown(e) {
+  if (e.keyCode == 39) rightKey = true;
+  else if (e.keyCode == 37) leftKey = true;
+  if (e.keyCode == 38) upKey = true;
+  else if (e.keyCode == 40) downKey = true;
+  if (e.keyCode >= 48 && e.keyCode <= 57){
+    degree = -90 + 20*(e.keyCode-48);
+  }
+  if (e.keyCode >= 96 && e.keyCode <= 105){
+    finLen =  25*(e.keyCode-96);
+    square.y = -80 - finLen
+    square.h = 240 + finLen
+  }
+  draw()
+}
+
+function keyUp(e) {
+  if (e.keyCode == 39) rightKey = false;
+  else if (e.keyCode == 37) leftKey = false;
+  if (e.keyCode == 38) upKey = false;
+  else if (e.keyCode == 40) downKey = false;
+}
+function draw() {
+  clearRect();
+  drawSquare();
+}
+window.onload = init;
+</script>
+</head>
+
+<body>
+<canvas id="canvas" width="500" height="500"></canvas>
+</body>
+</html>
