@@ -14,7 +14,6 @@ from PIL import Image
 import numpy as np
 import cv2
 import sys
-import numpy as np
 import pyautogui 
 import time
 
@@ -25,11 +24,8 @@ from finger_control import finger_control_f
 
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
-
-#import webClientDemo
-
-import socket 
-import time 
+import paho.mqtt.client as mqtt
+import base64
 
 
 onMsg = "1"

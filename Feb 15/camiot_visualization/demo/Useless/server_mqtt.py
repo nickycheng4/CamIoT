@@ -25,70 +25,6 @@ from finger_control import finger_control_f
 
 strbroker = "192.168.1.5"
 
-# ------------------------------------------ Control Functions  ------------------------------------------ #
-def video_control(dec):
-    print(pyautogui.size()) 
-    print(pyautogui.position()) 
-    print(dec)
-    if dec =='':
-        return
-    if dec == 'Up':
-        pyautogui.press('space')
-    elif dec == 'Left':
-        pyautogui.hotkey("ctrlleft", "p")
-    elif dec == 'Right':
-        pyautogui.hotkey("ctrlleft", "n")
-    else:
-        pyautogui.press('esc')
-
-def monitor_control(dec):
-    if dec =='':
-        return
-    if dec == 'Down':
-        img = np.zeros([3840,2160,3],dtype=np.uint8)
-        img.fill(0)
-        cv2.imshow('image',img)
-        # cv2.waitKey(0)
-        # pyautogui.press('space')
-    else:
-        pyautogui.press('space')
-        cv2.destroyAllWindows()
-
-def printer_control(dec):
-    pyautogui.hotkey("ctrlleft", "p")
-    if dec == 'Down':
-        print('Manually print.')
-    elif dec == 'Up':
-        print('Print on the default setting.')
-        pyautogui.press('enter')
-    elif dec == 'Right':
-        print('Printer right. Double print.')
-        pyautogui.click(609, 845) 
-        pyautogui.click(677, 432) 
-    elif dec == 'Left':
-        print('Printer left.')
-
-def door_control(dec):
-    global applianceDict
-    if dec == 'Down':
-        print('Door closed.')
-        # make if blink twice
-        DoorTuple=applianceDict['Door']
-        applianceClient=callAppliace('Door',DoorTuple[1])
-        controlAppliance(applianceClient)
-    else:
-        print('Door Open.')
-        # make if blink twice with a longer interval
-        DoorTuple=applianceDict['Door']
-        applianceClient=callAppliace('Door',DoorTuple[1])
-        controlAppliance(applianceClient)
-
-def coffee_control(dec):
-    if dec == 'Down':
-        print('Coffee maker off.')
-    else:
-        print('The coffee is 60% full.')
-
 # ------------------------------------------ MQTT Functions  ------------------------------------------ #
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
@@ -112,7 +48,7 @@ def on_message(client, userdata, msg):
             print('entered')
             cv2.destroyAllWindows()
             control = False
-            flag_f1 = True
+            flag_f1 = False
             # 180,135
             x_f1 = 60
             x_f2 = 0
@@ -183,58 +119,6 @@ def on_message(client, userdata, msg):
 
         elif info == 'con':
             print('con part coming soon.')
-            # control apps
-            img_bk,k,top,mid,control_signal = finger_control_f(direc,220, 5,-70,3)
-            # update the coordinates of the 2 images
-            if flag_f1:
-                flag_f1 = False
-                x_f1 = mid
-                y_f1 = top
-                x_f2 = mid
-                y_f2 = top
-            else:
-                x_f2 = mid
-                y_f2 = top
-            # Compute direction
-            xx_thres = 20
-            yy_thres = 15
-            # delta
-            delta_y_f = y_f2 - y_f1
-            delta_x_f = x_f2 - x_f1
-            # use delta for direction
-            if (delta_x_f > xx_thres or delta_x_f < -xx_thres) or (delta_y_f > yy_thres or delta_y_f < -yy_thres):
-                # left
-                if delta_y_f < -slope * delta_x_f and delta_y_f > slope * delta_x_f:
-                    print('go left')
-                    control_signal = 'Left'
-                # right
-                elif delta_y_f > -slope * delta_x_f and delta_y_f < slope * delta_x_f:
-                    print('go right')
-                    control_signal = 'Right'
-                # down
-                elif delta_y_f > -slope * delta_x_f and delta_y_f > slope * delta_x_f:
-                    print('go down')
-                    control_signal = 'Down'
-                # up
-                elif delta_y_f < -slope * delta_x_f and delta_y_f < slope * delta_x_f:
-                    print('go up')
-                    control_signal = 'Up'
-            else:
-                print('STAY.')
-                pyautogui.press('v')
-            # object control
-            if obj == 'TV':
-              video_control(control_signal)
-            elif obj == 'Monitor':
-              monitor_control(control_signal)
-            elif obj == 'Printer':
-              printer_control(control_signal)
-            elif obj == 'Door':
-              door_control(control_signal)
-            elif obj == 'Coffee Maker':
-              coffee_control(control_signal)
-            else:
-                print('None')
 
         else:
             direc = str(counter)+'image.png'
@@ -247,7 +131,8 @@ def on_message(client, userdata, msg):
         
         with open('1.png', "wb") as fh:
             fh.write(base64.decodebytes(msg.payload))
-                
+        
+        
 
 # ------------------------------------------ initiate variables  ------------------------------------------ #
 info = 'nothing'

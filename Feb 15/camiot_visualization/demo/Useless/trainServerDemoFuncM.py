@@ -193,7 +193,21 @@ try:
         time_in = time.time()
         # Read the length of the image as a 32-bit unsigned int. If the
         # length is zero, quit the loop
-        image_len = connection.recv(500000)
+        
+        image_len = b''
+        
+        while True:
+
+            image_frag = connection.recv(8192)
+            #print(image_frag)
+            if not image_frag:
+                break
+            image_len+=image_frag
+        
+        print(image_len)
+        
+        
+        #image_len = connection.recv(65534)
         print(len(image_len))
         if not image_len:
             break
