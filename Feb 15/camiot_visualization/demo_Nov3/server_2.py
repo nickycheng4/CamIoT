@@ -26,7 +26,7 @@ from finger_control import finger_control_f
 
 strbroker = "192.168.1.22"
 tServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-tServer.bind(('192.168.1.18', 8000))
+tServer.bind(('192.168.1.8', 8000))
 tServer.listen(0)
 connect,addr = tServer.accept()
 
@@ -37,8 +37,13 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     global obj
+    global flag_f1
+    global x_f1
+    global y_f1
+    flag_f1 = True
     #print(msg.topic)
-    if msg.topic == 'image': 
+    if msg.topic == 'image':
+        
         #print(len(msg.payload))
         #print('image transmitted')
         t1 = time.time()
@@ -49,6 +54,7 @@ def on_message(client, userdata, msg):
         print('Get control signal:',info)
 
         if info == 'rec':
+            flag_f1 = True 
             print('Doing classification.')
             test_set = []
             img_crop,img_bk = generate_crop('1.png',220)
@@ -117,17 +123,20 @@ def on_message(client, userdata, msg):
 
         elif info == 'con':
             t2 = time.time()
-            print(obj)
-            print('Con coming soon.')
+            print(obj)#prediction result
+            #print('Con coming soon.')
             
             img_bk,k,top,mid,control_signal = finger_control_f('1.png',220, 5,-70,3)
+            cv2.imwrite('bw image.jpg',img_bk)
             height,width = img_bk.shape
             t3 = time.time()
             
 
             pyautogui.press('r')
-            x_f1 = mid
-            y_f1 = top
+            if flag_f1:
+                x_f1 = mid
+                y_f1 = top
+                flag_f1 = False
 
             if obj == 'Printer':
                 pyautogui.press('a')
