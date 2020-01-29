@@ -19,7 +19,6 @@ import cv2
 import sys
 import pyautogui
 import socket
-import math
 
 sys.path.insert(0,'Finger_Detection')
 from crop import generate_crop
@@ -125,17 +124,12 @@ def on_message(client, userdata, msg):
             #print(obj)
             #print('Con coming soon.')
             
-            img_bk,k,top,mid,control_signal,bottom_mid = finger_control_f('1.png',binary_thre, 5,-70,3)
+            img_bk,k,top,mid,control_signal = finger_control_f('1.png',binary_thre, 5,-70,3)
             height,width = img_bk.shape
             t3 = time.time()
-            print(top,mid,bottom_mid)
-            control_finger_length = math.sqrt( top**2 + (mid-bottom_mid)**2 )
-            control_finger_angle = np.arctan(top/(mid-bottom_mid))
-            command_finger_length = str(math.floor(control_finger_length/10))
-            command_finger_angle = str(math.floor(control_finger_angle/math.pi*10))
-            pyautogui.press(command_finger_length)
-            pyautogui.press('num'+command_finger_angle)
+            print(top,mid)
 
+            
             if not x_f1 or not y_f1:
                 #too high
                 if height - top < height/4: 
