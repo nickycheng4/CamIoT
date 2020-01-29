@@ -203,7 +203,7 @@ def finger_control_f(img_dir,thre, down_thr=30,left_thr=-9., right_thr=2.):
 
 
 		# print('General Direction of Finger is: %s with k value: %.2f' %(direc,general_k))
-	return img, general_k, to_crop_v, to_crop_h, control_signal, bottom_mid
+	return img, general_k, to_crop_v, to_crop_h, control_signal
 
 
 
@@ -211,7 +211,7 @@ if __name__ == "__main__":
 	while True:
 		num = '36'
 		if num != '0':
-			img_bk,k,top,mid,control, bottom_mid = finger_control_f(num+'image.jpg',200, 30,-70,3)
+			img_bk,k,top,mid,control = finger_control_f(num+'image.jpg',200, 30,-70,3)
 			print('slope is ',k,'top y value is ',top, 'mid value is ', mid)
 			print('control signal is', control)
 			cv2.imshow('Binary Image', img_bk)
