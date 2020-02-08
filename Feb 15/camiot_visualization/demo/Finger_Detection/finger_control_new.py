@@ -25,9 +25,6 @@ def finger_control_f_new(img_dir, threshold, strict=50):
 
 	# blur the background
 	im2, contours, hierarchy = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-	# for cnt in contours:
-	#     hull = cv2.convexHull(cnt)
-	#     cv2.drawContours(bg, [hull], -1, (0, 0, 255), 1) 
 	cv2.drawContours(bg, contours, -1, (0,255,0), 1)
 	smooth = np.ones((30, 30), np.float32) / (30*30) * 10
 	bg = cv2.filter2D(bg, -1, smooth)
@@ -83,7 +80,7 @@ def finger_control_f_new(img_dir, threshold, strict=50):
 					left = x
 					break
 			# right
-			for x in range(new_mid_point, np.max([new_mid_point+int(width/4),0]), 1):
+			for x in range(new_mid_point, np.min([new_mid_point+int(width/4),width]), 1):
 				if bg3[h_point, x]  > 0:
 					right = x
 					break
@@ -156,7 +153,7 @@ if __name__ == "__main__":
 	# print('slope is ',k,'top y value is ',top, 'mid value is ', mid)
 	# print('control signal is', control)
 
-	img_bk, height_out, top_out, bott_out, topmid_out, slope_out = finger_control_f_new('IRBOT2crp.jpg',10,50) 
+	img_bk, height_out, top_out, bott_out, topmid_out, slope_out = finger_control_f_new('47OhmONcrp.jpg',50,50) 
 	print('result: measured top ', height_out,' max top ',top_out,' bottom middle ', bott_out,\
 		' top middle ' , topmid_out, ' slope ',slope_out)
 	cv2.imshow('Binary Image', img_bk)
