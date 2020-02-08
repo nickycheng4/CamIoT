@@ -72,6 +72,13 @@ def finger_control_f_new(img_dir, threshold, strict=50):
 		new_mid_point = start_point
 		new_height = h_poin_o-5
 		for h_point in range(h_poin_o-5,15,-1):
+			# check if the width of the area is too small, break
+			if start_width < int(width/5):
+				print('break at ', h_point, start_point)
+				top_mid.append(start_point)
+				flag_default = False
+				# max_height.append(new_height)
+				break
 			# left
 			left = 0
 			right = 0
@@ -90,7 +97,7 @@ def finger_control_f_new(img_dir, threshold, strict=50):
 			bg3[h_point+1, mid_line] = 255
 			# end condition - large variance
 			if np.abs(mid_line-mid_list[-1]) > int(width/strict) or width_line > width_list[-1]+int(width/(strict*1.5)):
-				print('break at ', h_point, mid_line,mid_list[-1])
+				print('break at ', h_point, mid_list[-1])
 				top_mid.append(mid_list[-1])
 				flag_default = False
 				# max_height.append(new_height)
@@ -153,7 +160,9 @@ if __name__ == "__main__":
 	# print('slope is ',k,'top y value is ',top, 'mid value is ', mid)
 	# print('control signal is', control)
 
-	img_bk, height_out, top_out, bott_out, topmid_out, slope_out = finger_control_f_new('47OhmONcrp.jpg',50,50) 
+	img_bk, height_out, top_out, bott_out, topmid_out, slope_out = finger_control_f_new('47OhmOFFcrp.jpg',50,50) 
+	# img_bk, height_out, top_out, bott_out, topmid_out, slope_out = finger_control_f_new('7image.jpg',50,50) 
+	# img_bk, height_out, top_out, bott_out, topmid_out, slope_out = finger_control_f_new('IRBOT1crp.jpg',50,50)
 	print('result: measured top ', height_out,' max top ',top_out,' bottom middle ', bott_out,\
 		' top middle ' , topmid_out, ' slope ',slope_out)
 	cv2.imshow('Binary Image', img_bk)
