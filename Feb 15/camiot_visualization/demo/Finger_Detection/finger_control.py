@@ -1,5 +1,6 @@
 import numpy as np
 import cv2 
+# from pyimagesearch import imutils
 from matplotlib import pyplot as plt
 
 from binary_image import binary_image_r
@@ -203,20 +204,144 @@ def finger_control_f(img_dir,thre, down_thr=30,left_thr=-9., right_thr=2.):
 
 
 		# print('General Direction of Finger is: %s with k value: %.2f' %(direc,general_k))
-	return img, general_k, to_crop_v, to_crop_h, control_signal
+	return img, general_k, to_crop_v, to_crop_h, control_signal, bottom_mid
 
+
+def finger_control_f1(img_dir):
+	image = cv2.imread(img_dir)
+	height,width,_ = image.shape
+	height = int(height/2)
+	# use only the lower half
+	image = image[height:]
+	bg = image.copy()
+	bg[:,:,:] = 0
+	bg2 = bg.copy()
+
+	# sharp and edge
+	kernel_sharpening = np.array([[-1,0,-1], 
+                              [-1, 7,-1],
+                              [-1,0,-1]])
+	sharpened = cv2.filter2D(image, -1, kernel_sharpening)
+
+	gray = cv2.cvtColor(sharpened, cv2.COLOR_BGR2GRAY)
+	gray = cv2.bilateralFilter(gray, 11, 17, 17)
+	edged = cv2.Canny(gray, 30, 200)
+
+	# blur the background
+	im2, contours, hierarchy = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+	# for cnt in contours:
+	#     hull = cv2.convexHull(cnt)
+	#     cv2.drawContours(bg, [hull], -1, (0, 0, 255), 1) 
+	cv2.drawContours(bg, contours, -1, (0,255,0), 1)
+	smooth = np.ones((30, 30), np.float32) / (30*30) * 10
+	bg = cv2.filter2D(bg, -1, smooth)
+
+	# edge again
+	gray2 = cv2.cvtColor(bg, cv2.COLOR_BGR2GRAY)
+	ret, thresh = cv2.threshold(gray2, 127, 255, 0)
+	im3, contours2, hierarchy2 = cv2.findContours(gray2.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+	cv2.drawContours(bg2, contours2, -1, (255,255,0), 1)
+
+	# find the lines in the background2
+	# gray2 = cv2.cvtColor(bg2, cv2.COLOR_BGR2GRAY)
+	# edges2 = cv2.Canny(gray2,50,255,apertureSize = 3) 
+	bg3 = bg2[:,:,0]
+	mid_record = []
+	width_record = []
+	prev_point = 0
+	mid_point = 0
+	mid_width = 0
+	toggle = False
+	# middle point at the bottom line
+	h_point = height-10
+	bott_mid = []
+	bott_width = []
+	for w_point in range(10,width-10):
+		if bg3[h_point, w_point] > 0 and toggle:
+			mid_point = int((prev_point + w_point)/2)
+			mid_width = w_point - prev_point 
+			bott_mid.append(mid_point)
+			bott_width.append(mid_width)
+			prev_point = w_point
+			toggle = False
+		elif bg3[h_point, w_point] == 0:
+			toggle = True
+		else:
+			toggle = toggle
+	bg3[h_point, bott_mid] = 255
+
+	max_height = []
+	top_mid = []
+	for start_point,start_width in zip(bott_mid,bott_width):
+		mid_list = [start_point]
+		width_list = [start_width]
+		new_mid_point = start_point
+		for h_point in range(height-20,5,-5):
+			# left
+			left = 0
+			right = 0
+			for x in range(new_mid_point, np.max(new_mid_point-int(width/4),0), -1):
+				if bg3[h_point, x]  > 0:
+					left = x
+					break
+			# right
+			for x in range(new_mid_point, np.max(new_mid_point+int(width/4),0), 1):
+				if bg3[h_point, x]  > 0:
+					right = x
+					break
+			mid_line = int((left+right)/2)
+			width_line = right-left
+			bg3[h_point, mid_line] = 255
+			if np.abs(mid_line-mid_list[-1]>20) or width_line > width_list[-1]+10:
+				print('break at ', h_point, mid_line,mid_list[-1])
+				top_mid.append(mid_line)
+				break
+			else:
+				mid_list.append(mid_line)
+				width_list.append(width_line)
+				new_mid_point = mid_line
+		max_height.append(h_point)
+	# bg3[max_height, bott_mid] = 255
+	print(max_height)
+	print(bott_mid)
+	print(top_mid)
+	out_index = np.argmax(max_height)
+	height_out = max_height[out_index]
+	bott_out = bott_mid[out_index]
+	topmid_out = top_mid[out_index]
+	return bg3, height_out, bott_out, topmid_out
+
+
+	# height,width,_ = img_o.shape
+	# img_o = img_o[int(height/2):]
+	# img = cv2.cvtColor(img_o, cv2.COLOR_BGR2GRAY)
+	# ret, thresh = cv2.threshold(img, 127, 255, 0)
+	# im2, contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+	# cv2.drawContours(img, contours, -1, (0,255,0), 3)
+	# return img
 
 
 if __name__ == "__main__":
-	while True:
-		num = '36'
-		if num != '0':
-			img_bk,k,top,mid,control = finger_control_f(num+'image.jpg',200, 30,-70,3)
-			print('slope is ',k,'top y value is ',top, 'mid value is ', mid)
-			print('control signal is', control)
-			cv2.imshow('Binary Image', img_bk)
 
-			cv2.waitKey(0)
-			cv2.destroyAllWindows()
-		else:
-			break
+	# img_bk,k,top,mid,control, bottom_mid = finger_control_f('IRBOT1crp.jpg',200, 30,-70,3)
+	# print('slope is ',k,'top y value is ',top, 'mid value is ', mid)
+	# print('control signal is', control)
+
+	img_bk, height_out, bott_out, topmid_out = finger_control_f1('WALL1.jpg') 
+	print('result: top ', height_out,' bottom middle ', bott_out,' top middle ' , topmid_out)
+	cv2.imshow('Binary Image', img_bk)
+
+	cv2.waitKey(0)
+	# cv2.destroyAllWindows()
+	# while True:
+	# 	num = '36'
+	# 	if num != '0':
+	# 		img_bk,k,top,mid,control, bottom_mid = finger_control_f(num+'image.jpg',200, 30,-70,3)
+	# 		print('slope is ',k,'top y value is ',top, 'mid value is ', mid)
+	# 		print('control signal is', control)
+	# 		cv2.imshow('Binary Image', img_bk)
+
+	# 		cv2.waitKey(0)
+	# 		cv2.destroyAllWindows()
+	# 	else:
+	# 		break
