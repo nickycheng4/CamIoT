@@ -10,7 +10,7 @@ import socket
 from testImuConNew import imuTri
 
 strbroker = "192.168.1.22"
-server_ip = '192.168.1.18'
+server_ip = '192.168.1.8'
 
 tSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 tSocket.connect((server_ip, 8000))

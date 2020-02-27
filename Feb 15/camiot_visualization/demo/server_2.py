@@ -27,7 +27,7 @@ from finger_control import finger_control_f
 
 strbroker = "192.168.1.22"
 tServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-tServer.bind(('192.168.1.18', 8000))
+tServer.bind(('192.168.1.8', 8000))
 tServer.listen(0)
 connect,addr = tServer.accept()
 
