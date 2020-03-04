@@ -10,30 +10,85 @@ import cv2
 import matplotlib.pyplot as plt  
 
 
+
 def masking(image,thre):
 	output=cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-	output=cv2.adaptiveThreshold(output, 255, cv2.cv2.ADAPTIVE_THRESH_MEAN, cv2.THRESH_BINARY, 11,2)
-	#retval,output=cv2.threshold(output,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-	return output
+	output=cv2.adaptiveThreshold(output, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11,2)
+	retval=cv2.threshold(output,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+	return retval,output
 
 
+def fingerBottom(image):
+	height,width = image.shape
 
+	white_thr = 230
+	black_thr = 10
+	counter=0
+	counter_2=0
+	left=0
+	right=0
+	thickness=0
+	ls=0
+	rs=0
+	t=0
+	print("height: ",height," width: ",width)
+	# get the white range for each line
+	for j in range(width):
+			 if image[j,460] >white_thr:
+			 	if (counter_2==0):
+			 		left=j
+			 	elif (counter_2 > 0):
+			 		right=j
+			 		thickness=right-left
+			 	counter_2=counter_2+1	
+			 else:
+			 	if (t<thickness):
+			 		ls=left
+			 		rs=right
+			 		t=rs-ls
+			 	left=0
+			 	right=0
+			 	counter=counter+1
+			 	counter_2=0
+
+	print("ls: ",ls,"rs: ", rs, "t: ",t)
+	
+	midPixel=(rs+ls)/2
+	print(midPixel)
+	return midPixel,460
+	
 def fignerFinder():
 	ap=argparse.ArgumentParser()
 	ap.add_argument("-f", "--first", required=True,help="first input image")
-	ap.add_argument("-s", "--second", required=True,help="second input image")
+	#ap.add_argument("-s", "--second", required=True,help="second input image")
 	args = vars(ap.parse_args())
+	#setting the threshold value in case we use cv2.THRESH_BINARY
 	thre=200
+	radius=101
+
 
 	#load the image 
 	ir=cv2.imread(args["first"])	
-	noIr=cv2.imread(args["second"])
-	#convert the image to grayscale 
-	irOut=masking(ir,thre)
-	noIrOut=masking(noIr,thre)
-	cv2.imwrite("results/irOut_ADAPTIVE_THRESH_MEAN.jpg",irOut)
-	cv2.imwrite("results/noIrOut_ADAPTIVE_THRESH_MEAN.jpg",noIrOut)
-	
+	#noIr=cv2.imread(args["second"])
+	#apply different thresholding so far gussian and adaptive means are better  
+	#irRet,irOut=masking(ir,thre)
+	#noirRet,noIrOut=masking(noIr,thre)
+
+	#cv2.imwrite("results/irOut_ADAPTIVE_THRESH_MEAN.jpg",irOut)
+	#cv2.imwrite("results/noIrOut_ADAPTIVE_THRESH_MEAN.jpg",noIrOut)
+	retval,irG=masking(ir,thre)
+	bx,by=fingerBottom(irG)
+	bx=int(bx)
+	print(bx)
+	print(by)
+	#bottom=(bx,int(by)
+	irG = cv2.GaussianBlur(irG, (radius, radius), 0)
+	(minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(irG)
+	cv2.arrowedLine(ir, (bx,by), maxLoc, (0,0,255),2)
+	cv2.imshow("arrowDirection",ir)
+	cv2.imwrite("arrows/arrowDirection2.jpg",ir)
+	cv2.waitKey(0)
+	# find the white area of the finger 
 
 
 
@@ -42,60 +97,13 @@ def fignerFinder():
 
 
 
-
-'''
-def example():
-	# construct the argument parse and parse the arguments
-	ap = argparse.ArgumentParser()
-	ap.add_argument("-f", "--first", required=True,
-		help="first input image")
-	ap.add_argument("-s", "--second", required=True,
-		help="second")
-	args = vars(ap.parse_args())
-
-	# load the two input images
-	imageA = cv2.imread(args["first"])
-	imageB = cv2.imread(args["second"])
-	# convert the images to grayscale
-	grayA = cv2.cvtColor(imageA, cv2.COLOR_BGR2GRAY)
-	grayB = cv2.cvtColor(imageB, cv2.COLOR_BGR2GRAY)
-	cv2.imshow("imag1",grayA)
-	cv2.imshow("imag2",grayB)
-
-	(score, diff) = compare_ssim(grayA, grayB, full=True)
-
-	diff = (diff * 255).astype("uint8")
-	print("SSIM: {}".format(score))
-	cv2.imshow("difference",diff)
-
-	# threshold the difference image, followed by finding contours to
-	# obtain the regions of the two input images that differ
-	thresh = cv2.threshold(diff, 0, 255,
-		cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
-
-	cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
-		cv2.CHAIN_APPROX_SIMPLE)
-
-	cnts = imutils.grab_contours(cnts)
-
-	# loop over the contours
-	for c in cnts:
-		# compute the bounding box of the contour and then draw the
-		# bounding box on both input images to represent where the two
-		# images differ
-		(x, y, w, h) = cv2.boundingRect(c)
-		cv2.rectangle(imageA, (x, y), (x + w, y + h), (0, 0, 255), 2)
-		cv2.rectangle(imageB, (x, y), (x + w, y + h), (0, 0, 255), 2)
-	# show the output images
-	cv2.imwrite("output/Original.jpg", imageA)
-	cv2.imwrite("output/Modified.jpg", imageB)
-	cv2.imwrite("output/Diff.jpg", diff)
-	cv2.imwrite("output/Thresh.jpg", thresh)
-	cv2.waitKey(10000000)
-	cv2.destroyAllWindows()
-'''
 
 fignerFinder()
-#example()
+
+
+
+
+
+
 
 	
