@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 def masking(image,thre):
 	output=cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-	output=cv2.adaptiveThreshold(output, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11,2)
+	output=cv2.adaptiveThreshold(output, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11,2)
 	retval=cv2.threshold(output,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 	return retval,output
 
@@ -31,10 +31,15 @@ def fingerBottom(image):
 	ls=0
 	rs=0
 	t=0
+	w=470
 	print("height: ",height," width: ",width)
+	cv2.imshow("GaussianBlurpic",image)
+
+	print(image[:,w])
+
 	# get the white range for each line
 	for j in range(width):
-			 if image[j,460] >white_thr:
+			 if image[j,w] >white_thr:
 			 	if (counter_2==0):
 			 		left=j
 			 	elif (counter_2 > 0):
@@ -55,7 +60,7 @@ def fingerBottom(image):
 	
 	midPixel=(rs+ls)/2
 	print(midPixel)
-	return midPixel,460
+	return midPixel,w
 	
 def fignerFinder():
 	ap=argparse.ArgumentParser()
