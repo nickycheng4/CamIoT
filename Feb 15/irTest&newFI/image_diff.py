@@ -90,7 +90,14 @@ def fignerFinder():
 	irG = cv2.GaussianBlur(irG, (radius, radius), 0)
 	(minVal, maxVal, minLoc, maxLoc) = cv2.minMaxLoc(irG)
 	cv2.arrowedLine(ir, (bx,by), maxLoc, (0,0,255),2)
-	cv2.imshow("arrowDirection",ir)
+	h,w=irG.shape[:2]
+	mask = np.zeros((h+2, w+2), np.uint8)
+	cv2.floodFill(ir, mask,(0,0), 255)
+	ir_inv = cv2.bitwise_not(ir)
+	ir_out=ir && ir_inv
+	#cv2.imshow("arrowDirection",ir)
+	cv2.imshow("FloodFill",ir)
+	cv2.imshow("inv added",ir_out)
 	cv2.imwrite("arrows/arrowDirection2.jpg",ir)
 	cv2.waitKey(0)
 	# find the white area of the finger 
