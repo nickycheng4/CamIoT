@@ -26,7 +26,7 @@ server_socket.listen(0)
 
 
 counter = int(sys.argv[1])
-limit=counter+10
+limit=counter+50
 # Accept a single connection and make a file-like object out of it
 connection = server_socket.accept()[0].makefile('rb')
 try:

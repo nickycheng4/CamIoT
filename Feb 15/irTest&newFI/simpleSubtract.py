@@ -23,6 +23,9 @@ cv2.imshow("irG",irG)
 subG=cv2.subtract(irG,origG)
 cv2.imshow("subG",subG)
 cv2.waitKey(0)
+#irFloodFill=cv2.FloodFill(ir, seed_point, 255, lo_diff=(0, 0, 0, 0), up_diff=(0, 0, 0, 0), flags=4, mask=None)
+
+
 '''
 subOI=orig-ir
 subIO=ir-orig
