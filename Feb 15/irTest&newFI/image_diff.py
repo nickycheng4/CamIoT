@@ -66,7 +66,7 @@ def fingerBottomToTop(image):
 	height,width = image.shape
 	cv2.threshold(image,127,255,cv2.THRESH_BINARY)
 	
-	white_thr = 240
+	white_thr = 230
 	counter=0
 	left=0
 	right=0
@@ -77,6 +77,7 @@ def fingerBottomToTop(image):
 	t=0
 	w=470
 	midPixels=[]
+
 	for i in range (0,height-10,10):
 		for j in range(lb,rb,1):
 			if image[w-i,j] > white_thr:
@@ -84,10 +85,9 @@ def fingerBottomToTop(image):
 					left=j
 				elif (counter > 0):
 					right=j
-					thickness=right-left
 				counter=counter+1
 			else:
-				if(t<thickness):
+				if(t<(right-left)):
 					ls=left
 					rs=right
 					t=rs-ls
@@ -101,9 +101,7 @@ def fingerBottomToTop(image):
 		rb=rs
 		ls=0
 		rs=0
-		t=0
-		thickness=0
-		counter=0		
+		t=0		
 	#image[midPixels]=0
 	#cv2.imshow*()		
 	return midPixels	
