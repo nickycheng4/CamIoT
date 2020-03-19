@@ -5,24 +5,25 @@ import socket
 import sys
 import pickle
 import struct ### new code
+import RPi.GPIO as GPIO
+from time import sleep
 
 
 
 # Connect a client socket to my_server:8000 (change my_server to the
 # hostname of your server)
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect(('192.168.1.25', 8200))
-import RPi.GPIO as GPIO
-from time import sleep
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(29,GPIO.OUT,initial=GPIO.LOW)
-GPIO.setup(36,GPIO.OUT,initial=GPIO.LOW)
+client_socket.connect(('192.168.1.108', 8200))
+#GPIO.setwarnings(False)
+#GPIO.setmode(GPIO.BOARD)
+#GPIO.setup(29,GPIO.OUT,initial=GPIO.LOW)
+#GPIO.setup(36,GPIO.OUT,initial=GPIO.LOW)
 
 
 
-GPIO.output(29,GPIO.HIGH)
-GPIO.output(36,GPIO.HIGH)
+#GPIO.output(29,GPIO.HIGH)
+#GPIO.output(36,GPIO.HIGH)
+
 cap = cv2.VideoCapture(0)
 i = 0
 start = time.time()
@@ -35,5 +36,7 @@ while True:
     if (stop - start) > 5:
         break
     i += 1
-GPIO.output(29,GPIO.LOW)
-GPIO.output(36,GPIO.LOW)
+print("frame: " ,frame)
+
+#GPIO.output(29,GPIO.LOW)
+#GPIO.output(36,GPIO.LOW)
