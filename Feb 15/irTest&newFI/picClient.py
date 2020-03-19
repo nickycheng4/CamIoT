@@ -27,18 +27,18 @@ try:
     with picamera.PiCamera() as camera:
         camera.resolution = (480, 480)
         # Start a preview and let the camera warm up for 2 seconds
-        GPIO.output(29,GPIO.LOW)
-        GPIO.output(36,GPIO.LOW)
+        GPIO.output(29,GPIO.HIGH)
+        GPIO.output(36,GPIO.HIGH)
         camera.start_preview()
        # camera.exposure_mode = 'nightpreview'
         time.sleep(2)
 
         start = time.time()
         stream = io.BytesIO()
-        for i in range(10):
-            if i%2 == 1:
-                GPIO.output(29,GPIO.HIGH)
-                GPIO.output(36,GPIO.HIGH)
+        for i in range(30):
+            #if i%2 == 1:
+             #   GPIO.output(29,GPIO.HIGH)
+              #  GPIO.output(36,GPIO.HIGH)
             camera.capture(stream , format='jpeg')
             connection.write(struct.pack('<L', stream.tell()))
             connection.flush()
@@ -46,10 +46,12 @@ try:
             connection.write(stream.read())
             stream.seek(0)
             stream.truncate()
-            GPIO.output(29,GPIO.LOW)
-            GPIO.output(36,GPIO.LOW)
+           # GPIO.output(29,GPIO.LOW)
+           # GPIO.output(36,GPIO.LOW)
     # Write a length of zero to the stream to signal we're done
     connection.write(struct.pack('<L', 0))
 finally:
     connection.close()
     client_socket.close()
+    GPIO.output(29,GPIO.LOW)
+    GPIO.output(36,GPIO.LOW)

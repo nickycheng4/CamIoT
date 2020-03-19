@@ -9,7 +9,7 @@ import picamera
 # Connect a client socket to my_server:8000 (change my_server to the
 # hostname of your server)
 client_socket = socket.socket()
-client_socket.connect(('192.168.1.48', 8000))
+client_socket.connect(('192.168.1.25', 8200))
 import RPi.GPIO as GPIO
 from time import sleep
 GPIO.setwarnings(False)
@@ -34,12 +34,16 @@ try:
         time.sleep(2)
 
         start = time.time()
+        timeelapsed = 0
         stream = io.BytesIO()
         for i in range(10):
             if i%2 == 1:
                 GPIO.output(29,GPIO.HIGH)
                 GPIO.output(36,GPIO.HIGH)
+            starttime = time.time()
             camera.capture(stream , format='jpeg')
+            stoptime = time.time()
+            timeelapsed += stoptime - starttime
             connection.write(struct.pack('<L', stream.tell()))
             connection.flush()
             stream.seek(0)
@@ -48,6 +52,8 @@ try:
             stream.truncate()
             GPIO.output(29,GPIO.LOW)
             GPIO.output(36,GPIO.LOW)
+
+        print("Time of Image Capture = " +str(timeelapsed))
     # Write a length of zero to the stream to signal we're done
     connection.write(struct.pack('<L', 0))
 finally:
