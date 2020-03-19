@@ -18,7 +18,9 @@ server_socket.listen(0)
 conn, addr = server_socket.accept()
 
 data = ""
-payload_size = struct.calcsize("H")
+payload_size = struct.calcsize("L")
+print(payload_size)
+
 while True:
     while len(data) < payload_size:
         data += conn.recv(4096)
