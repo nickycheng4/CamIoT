@@ -19,9 +19,11 @@ conn, addr = server_socket.accept()
 
 data = ""
 payload_size = struct.calcsize("L")
-print(payload_size)
-
+print("L: ", payload_size)
+print("H: ",struct.calcsize("H"))
+counter=0
 while True:
+    print(counter)
     while len(data) < payload_size:
         data += conn.recv(4096)
     packed_msg_size = data[:payload_size]
@@ -35,3 +37,4 @@ while True:
     frame=pickle.loads(frame_data)
     print(frame)
     cv2.imshow('frame',frame)
+    counter+= 1

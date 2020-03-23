@@ -18,7 +18,7 @@ import sys
 # Start a socket listening for connections on 0.0.0.0:8000 (0.0.0.0 means
 # all interfaces)
 server_socket = socket.socket()
-server_socket.bind(('192.168.1.48', 8000))
+server_socket.bind(('192.168.1.108', 8200))
 server_socket.listen(0)
 
 
@@ -46,7 +46,7 @@ try:
         
         file_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)
         img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-        cv2.imwrite('fingerData/'+str(counter)+'.jpg',img)
+        cv2.imwrite('fingerData/coffeeMakerNF/'+str(counter)+'.jpg',img)
         counter += 1
 
 finally:

@@ -64,7 +64,7 @@ def fingerBottom(image): #pass in the flood filled image
 
 def fingerBottomToTop(image):
 	height,width = image.shape
-	cv2.threshold(image,127,255,cv2.THRESH_BINARY)
+	
 	
 	white_thr = 230
 	counter=0
@@ -74,6 +74,8 @@ def fingerBottomToTop(image):
 	#left and right boundaries for scanning
 	lb=0		
 	rb=width-1
+	ls=0
+	rs=0
 	t=0
 	w=470
 	midPixels=[]
@@ -90,18 +92,18 @@ def fingerBottomToTop(image):
 				if(t<(right-left)):
 					ls=left
 					rs=right
+					print("left ",left," right ",right, " counter", counter, "w-i " ,w-i, " j", j)
 					t=rs-ls
 				left=0
 				right=0
-				thickness=0
 				counter=0		
 		midPixels.append((w-i,(rs+ls)/2))
-		
-		lb=ls
-		rb=rs
+		#lb=ls
+		#rb=rs
 		ls=0
 		rs=0
-		t=0		
+		t=0	
+		counter=0	
 	#image[midPixels]=0
 	#cv2.imshow*()		
 	return midPixels	
@@ -171,13 +173,16 @@ def batchTest():
 
 
 image=cv2.imread("fingerData/exp2/75.jpg")
+
 gray=output=cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+binaryImage=cv2.threshold(image,230,255,cv2.THRESH_BINARY)
+cv2.imshow("binaryImage", binaryImage)
 #fignerFinder(image)
 midPixels=fingerBottomToTop(gray)
 print(midPixels)
 cv2.arrowedLine(gray, (238,470), (279,370), (0,0,255),2)
 cv2.imshow("line",gray)
-cv2.waitKey(10000)
+cv2.waitKey(0)
 
 
 

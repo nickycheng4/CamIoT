@@ -36,6 +36,7 @@ def finger_control_f(img_dir,thre, down_thr=30,left_thr=-9., right_thr=2.):
 		elif img[height-1,pixel] < black_thr:
 			if img[height-1, pixel - 4] >white_thr and start_point < current_point:
 				white_areas.append((start_point,current_point))
+				
 	#print('White areas: ',white_areas)
 	# if no white area, return the original image
 	print(white_areas)
@@ -152,4 +153,10 @@ def finger_control_f(img_dir,thre, down_thr=30,left_thr=-9., right_thr=2.):
 		control_signal = direc
 		# print('General Direction of Finger is: %s with k value: %.2f' %(direc,general_k))
 	return img, general_k, to_crop_v, to_crop_h, control_signal, bottom_mid
+
+
+
+
+	
+
 

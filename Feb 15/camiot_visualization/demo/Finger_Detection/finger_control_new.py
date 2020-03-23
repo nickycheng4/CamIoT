@@ -154,6 +154,7 @@ def finger_control_f_new(img_dir, threshold, strict=50):
 		bg3[top_out:top_out+9,topmid_out:topmid_out+9] = 255
 	return bg3, height_out, top_out, bott_out, topmid_out, slope_out
 
+
 if __name__ == "__main__":
 
 	# img_bk,k,top,mid,control, bottom_mid = finger_control_f('IRBOT1crp.jpg',200, 30,-70,3)
