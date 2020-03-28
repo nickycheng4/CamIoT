@@ -31,7 +31,8 @@ while True:
     ret,frame=cap.read()
     if i%10 == 0:
         data = pickle.dumps(frame)
-        client_socket.sendall(struct.pack("package", len(data)) + data)
+        #client_socket.sendall(struct.pack("package", len(data)) + data)
+        client_socket.sendall(struct.pack("package", len(data),data))
     stop = time.time()
     if (stop - start) > 5:
         break
